@@ -2,6 +2,14 @@ package snofkid
 
 import "time"
 
+const (
+	TwitterEpoch int64 = 1288834974657
+
+	TimestampBits = 41
+	MachineIDBits = 10
+	SequenceBits  = 12
+)
+
 // SnowflakeID is a type alias of int64 which represents a Twitter Snowflake ID.
 //
 // It is strongly recommended not to generate any SnowflakeID directly without this package,
