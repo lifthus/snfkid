@@ -4,46 +4,40 @@ import (
 	"testing"
 )
 
-func TestDefaultGenerateSnowflakeID(t *testing.T) {
-	// curMs := time.Now().UnixMilli()
-	// snfid := New(6)
-	// if TimestampFromInt64(snfid) - TwitterEpoch - curMs > 1 {
-	// 	t.Errorf()
-	// }
-}
-
-func TestTimestampFromInt64(t *testing.T) {
-	target := Int64Max
-	validTimestamp := ClearInt64TopBit(target) >> 22
-	if ts := TimestampFromInt64(target); ts != validTimestamp {
-		t.Errorf("TimestampFromInt64 is expected to be %d but got %d", validTimestamp, ts)
-	}
-	target = 0
-	validTimestamp = 0
-	if ts := TimestampFromInt64(target); ts != validTimestamp {
-		t.Errorf("TimestampFromInt64 is expected to be %d but got %d", validTimestamp, ts)
+func TestRawTimestampGetter(t *testing.T) {
+	target := MockSnowflakeID(123456789, 1, 10)
+	if res := target.RawTimestamp(); res != 123456789 {
+		t.Errorf("Timestamp is expected to be %d but got %d", 123456789, res)
 	}
 }
 
-func TestClearInt64TopBit(t *testing.T) {
-	maxBit := Int64TopBit
-	if result := ClearInt64TopBit(maxBit); result != 0 {
-		t.Errorf("ClearInt64TopBit is expected to be %d but got %d", 0, result)
+func TestTimeGetter(t *testing.T) {
+	epoch := TwitterEpoch
+	target := MockSnowflakeID(123456789, 1, 10)
+	if res := target.Time(epoch); res.UnixMilli() != 123456789+epoch {
+		t.Errorf("Time UnixMilli is expected to be %d but got %d", 123456789+epoch, res.UnixMilli())
 	}
 }
 
-func TestInt64TopBit(t *testing.T) {
-	one := Int64One
-	validInt64TopBit := one << 63
-	if Int64TopBit != validInt64TopBit {
-		t.Errorf("Int64TopBit is expected to be %d but got %d", validInt64TopBit, Int64TopBit)
+func TestMachineIDGetter(t *testing.T) {
+	target := MockSnowflakeID(123456789, 123, 10)
+	if res := target.MachineID(); res != 123 {
+		t.Errorf("MachineID is expected to be %d but got %d", 123, res)
 	}
 }
 
-func TestInt64Max(t *testing.T) {
-	one := Int64One
-	validInt64Max := one<<63 - 1
-	if Int64Max != validInt64Max {
-		t.Errorf("Int64Max is expected to be %d but got %d", validInt64Max, Int64Max)
+func TestSequenceGetter(t *testing.T) {
+	target := MockSnowflakeID(123456789, 1, 123)
+	if res := target.Sequence(); res != 123 {
+		t.Errorf("Sequence is expected to be %d but got %d", 123, res)
 	}
+}
+
+// MockID generates a mock snowflake ID.
+// Note that each argument must be within the range specified below:
+// - timestamp: 0 <= timestamp <= 2^41 - 1 (2199023255551)
+// - machineID: 0 <= machineID <= 2^10 - 1 (1023)
+// - sequence: 0 <= sequence <= 2^12 - 1 (4095)
+func MockSnowflakeID(timestamp, machineID, sequence int64) SnowflakeID {
+	return SnowflakeID((timestamp << (MachineIDBits + SequenceBits)) | (machineID << SequenceBits) | sequence)
 }
