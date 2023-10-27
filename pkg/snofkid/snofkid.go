@@ -8,6 +8,10 @@ const (
 	TimestampBits = 41
 	MachineIDBits = 10
 	SequenceBits  = 12
+
+	MaxTimestamp = 2199023255551 // 2^41 - 1
+	MaxMachineID = 1023          // 2^10 - 1
+	MaxSequence  = 4095          // 2^12 - 1
 )
 
 // SnowflakeID is a type alias of int64 which represents a Twitter Snowflake ID.
