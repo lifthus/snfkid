@@ -23,13 +23,13 @@ type SnowflakeMachine struct {
 // From validates the given int64 value and converts it to a SnowflakeID if it is valid.
 //
 // The validity is determined by the sign and machine ID of the given int64 value.
-func (m *SnowflakeMachine) From(sfid int64) (SnowflakeID, error) {
+func (m *SnowflakeMachine) From(sfid int64) (int64, error) {
 
 	return 0, nil
 }
 
 // New generates a new SnowflakeID based on the given epoch and machine ID.
-func (m *SnowflakeMachine) New() SnowflakeID {
+func (m *SnowflakeMachine) New() int64 {
 	return 0
 }
 
