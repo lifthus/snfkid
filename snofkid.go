@@ -16,12 +16,12 @@ const (
 	SequenceMask  = MaxSequence
 )
 
-// SnowflakeIDFrom generates a snowflake ID optimistically, that is, without validation of the given arguments.
+// from generates a snowflake ID optimistically, that is, without validation of the given arguments.
 // Note that each argument must be within the specified range following this to generate a valid Snowflake ID:
 // - timestamp: 0 <= timestamp <= 2^41 - 1 (2199023255551)
 // - machineID: 0 <= machineID <= 2^10 - 1 (1023)
 // - sequence: 0 <= sequence <= 2^12 - 1 (4095)
-func SnowflakeIDFrom(timestamp, machineID, sequence int64) int64 {
+func from(timestamp, machineID, sequence int64) int64 {
 	return (timestamp << (MachineIDBits + SequenceBits)) | (machineID << SequenceBits) | sequence
 }
 

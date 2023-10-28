@@ -2,6 +2,12 @@ package snofkid
 
 import "testing"
 
+func TestIsSnowflakeIDValid(t *testing.T) {
+	if IsSnowflakeIDValid(-1234556789) {
+		t.Errorf("negative Snowflake ID is judged as valid")
+	}
+}
+
 func TestIsEpochValid(t *testing.T) {
 	// invalid cases
 	if IsEpochValid(-100) || IsEpochValid(-1) {

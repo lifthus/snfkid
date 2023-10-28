@@ -1,5 +1,9 @@
 package snofkid
 
+func IsSnowflakeIDValid(sfid int64) bool {
+	return sfid >= 0
+}
+
 func IsEpochValid(epoch int64) bool {
 	return epoch >= 0
 }
