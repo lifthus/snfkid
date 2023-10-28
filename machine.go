@@ -24,7 +24,7 @@ type SnowflakeMachine struct {
 }
 
 // New generates a new SnowflakeID based on the machine's epoch and ID.
-// it returns an error if more than MaxSequence Snowflakes are generated in the same millisecond.
+// it returns an error if more than 4096 Snowflakes are generated in the same millisecond.
 func (m *SnowflakeMachine) New() (int64, error) {
 
 	timestamp := time.Now().UnixMilli() - m.epoch
