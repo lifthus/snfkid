@@ -6,7 +6,8 @@ import (
 )
 
 const (
-	TestEpoch int64 = TwitterEpoch + 123456789
+	TestEpoch     int64 = TwitterEpoch + 123456789
+	TestMachineID int64 = 257
 )
 
 func TestNewMachine(t *testing.T) {
@@ -37,11 +38,10 @@ func TestNewMachine(t *testing.T) {
 }
 
 func TestMachineNewSnowflakesTimestamps(t *testing.T) {
-	mch, err := NewMachine(TestEpoch, 123)
+	mch, err := NewMachine(TestEpoch, TestMachineID)
 	if err != nil {
 		panic(err)
 	}
-
 	snowflakes, actualMillis := generateSnowflakesWithMilliSecsGenerated(mch)
 
 	for i := 0; i < len(snowflakes); i++ {
@@ -53,28 +53,41 @@ func TestMachineNewSnowflakesTimestamps(t *testing.T) {
 }
 
 func TestMachineNewSnowflakesMachineIDs(t *testing.T) {
+	mch, err := NewMachine(TestEpoch, TestMachineID)
+	if err != nil {
+		panic(err)
+	}
+	snowflakes, _ := generateSnowflakesWithMilliSecsGenerated(mch)
+
+	for i := 0; i < len(snowflakes); i++ {
+		if MachineID(snowflakes[i]) != TestMachineID {
+			t.Errorf("Snowflake %d is generated with wrong machine ID", snowflakes[i])
+			t.FailNow()
+		}
+	}
+
 }
 
 func TestMachineNewSnowflakesSequences(t *testing.T) {
 }
 
 func TestMachineValidateSnowflake(t *testing.T) {
-	mch, err := NewMachine(123456789, 123)
+	mch, err := NewMachine(TestEpoch, TestMachineID)
 	if err != nil {
 		panic(err)
 	}
-	sfid := from(123, 123, 10)
+	sfid := from(123, TestMachineID, 10)
 	if !mch.Validate(sfid) {
 		t.Errorf("Snowflake %d should be valid with test machine", sfid)
 	}
-	sfid = from(0, 122, 123)
+	sfid = from(0, TestMachineID-1, 123)
 	if mch.Validate(sfid) {
 		t.Errorf("Snowflake %d should be invalid with test machine", sfid)
 	}
 }
 
 func TestMachineTimeParser(t *testing.T) {
-	mch, err := NewMachine(TestEpoch, 123)
+	mch, err := NewMachine(TestEpoch, TestMachineID)
 	if err != nil {
 		panic(err)
 	}
