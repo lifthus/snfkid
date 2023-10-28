@@ -2,6 +2,7 @@ package snofkid
 
 import (
 	"fmt"
+	"sync"
 	"time"
 )
 
@@ -21,15 +22,29 @@ func NewMachine(epoch int64, machineID int64) (*SnowflakeMachine, error) {
 type SnowflakeMachine struct {
 	epoch     int64
 	machineID int64
+
+	mu     sync.Mutex
+	curMs  int64
+	curSeq int64
 }
 
 // New generates a new SnowflakeID based on the machine's epoch and ID.
 // it returns an error if more than 4096 Snowflakes are generated in the same millisecond.
 func (m *SnowflakeMachine) New() (int64, error) {
-
-	timestamp := time.Now().UnixMilli() - m.epoch
-
-	return from(timestamp, m.machineID, 0), nil
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	curMs := time.Now().UnixMilli()
+	timestamp := curMs - m.epoch
+	if curMs > m.curMs {
+		m.curMs = curMs
+		m.curSeq = 0
+	}
+	if m.curSeq > MaxSequence {
+		return 0, fmt.Errorf("snowflakes in a millisecond got exhausted")
+	}
+	curSeq := m.curSeq
+	m.curSeq++
+	return from(timestamp, m.machineID, curSeq), nil
 }
 
 // Validate validates the sign bit and the machine ID of the given SnowflakeID.

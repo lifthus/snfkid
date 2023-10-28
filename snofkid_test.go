@@ -4,6 +4,27 @@ import (
 	"testing"
 )
 
+var (
+	testMachine *SnowflakeMachine
+
+	snowflakes4096   []int64
+	actualMillis4096 []int64
+
+	snowflakes500ms []int64
+)
+
+func TestMain(m *testing.M) {
+	var err error
+	testMachine, err = NewMachine(TestEpoch, TestMachineID)
+	if err != nil {
+		panic(err)
+	}
+
+	snowflakes4096, actualMillis4096 = generateSnowflakesWithMilliSecsGenerated(testMachine)
+	snowflakes500ms = generateSnowflakesFor500ms(testMachine)
+	m.Run()
+}
+
 func TestSnowflakeFrom(t *testing.T) {
 	sfid := from(123456789, 123, 10)
 	switch {

@@ -10,9 +10,12 @@ func absoluteDiff(a, b int64) int64 {
 }
 
 func generateSnowflakesWithMilliSecsGenerated(mch *SnowflakeMachine) (snowflakes []int64, actualMillis []int64) {
-	for i := 0; i < MaxSequence; i++ {
+	for i := 0; i < MaxSequence+1; i++ {
 		now := time.Now().UnixMilli()
-		sfid, _ := mch.New()
+		sfid, err := mch.New()
+		if err != nil {
+			continue
+		}
 		snowflakes = append(snowflakes, sfid)
 		actualMillis = append(actualMillis, now)
 	}
@@ -27,7 +30,10 @@ func generateSnowflakesFor500ms(mch *SnowflakeMachine) (snowflakes []int64) {
 			case <-done:
 				return
 			default:
-				nsf, _ := mch.New()
+				nsf, err := mch.New()
+				if err != nil {
+					continue
+				}
 				snowflakes = append(snowflakes, nsf)
 			}
 		}
@@ -47,4 +53,15 @@ func groupSnowflakesByRawTimestamp(snowflakes []int64) map[int64][]int64 {
 		sfgroup[ts] = append(sfgroup[ts], sfid)
 	}
 	return sfgroup
+}
+
+func HasDuplicates(snowflakes []int64) bool {
+	sfset := make(map[int64]interface{})
+	for _, sf := range snowflakes {
+		if _, ok := sfset[sf]; ok {
+			return true
+		}
+		sfset[sf] = struct{}{}
+	}
+	return false
 }

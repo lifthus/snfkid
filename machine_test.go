@@ -38,12 +38,7 @@ func TestNewMachine(t *testing.T) {
 }
 
 func TestMachineNewSnowflakesTimestamps(t *testing.T) {
-	mch, err := NewMachine(TestEpoch, TestMachineID)
-	if err != nil {
-		panic(err)
-	}
-	snowflakes, actualMillis := generateSnowflakesWithMilliSecsGenerated(mch)
-
+	snowflakes, actualMillis := snowflakes4096, actualMillis4096
 	for i := 0; i < len(snowflakes); i++ {
 		if absoluteDiff(RawTimestamp(snowflakes[i])+TestEpoch, actualMillis[i]) > 2 {
 			t.Errorf("inaccurate timestamp generated(diff > 2ms):%d and %d", snowflakes[i], actualMillis[i])
@@ -53,31 +48,19 @@ func TestMachineNewSnowflakesTimestamps(t *testing.T) {
 }
 
 func TestMachineNewSnowflakesMachineIDs(t *testing.T) {
-	mch, err := NewMachine(TestEpoch, TestMachineID)
-	if err != nil {
-		panic(err)
-	}
-	snowflakes, _ := generateSnowflakesWithMilliSecsGenerated(mch)
-
+	snowflakes := snowflakes4096
 	for i := 0; i < len(snowflakes); i++ {
 		if MachineID(snowflakes[i]) != TestMachineID {
 			t.Errorf("Snowflake %d is generated with wrong machine ID", snowflakes[i])
 			t.FailNow()
 		}
 	}
-
 }
 
-func TestMachineNewSnowflakesSequences(t *testing.T) {
-	mch, err := NewMachine(TestEpoch, TestMachineID)
-	if err != nil {
-		panic(err)
-	}
-	snowflakes := generateSnowflakesFor500ms(mch)
-	sfgroup := groupSnowflakesByRawTimestamp(snowflakes)
-
-	for _, sfs := range sfgroup {
-		t.Error(len(sfs))
+func TestMachineNewSnowflakesDuplicates(t *testing.T) {
+	snowflakes := snowflakes500ms
+	if HasDuplicates(snowflakes) {
+		t.Errorf("duplicate Snowflakes are generated in 500ms")
 	}
 }
 
