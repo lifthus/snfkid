@@ -1,9 +1,7 @@
-package machine
-
-import "github.com/lifthus/snofkid"
+package snofkid
 
 func NewDefaultMachine(machineID int64) (*SnowflakeMachine, error) {
-	return NewMachine(snofkid.TwitterEpoch, machineID)
+	return NewMachine(TwitterEpoch, machineID)
 }
 
 func NewMachine(epoch int64, machineID int64) (*SnowflakeMachine, error) {
@@ -25,13 +23,13 @@ type SnowflakeMachine struct {
 // From validates the given int64 value and converts it to a SnowflakeID if it is valid.
 //
 // The validity is determined by the sign and machine ID of the given int64 value.
-func (m *SnowflakeMachine) From(sfid int64) (snofkid.SnowflakeID, error) {
+func (m *SnowflakeMachine) From(sfid int64) (SnowflakeID, error) {
 
 	return 0, nil
 }
 
 // New generates a new SnowflakeID based on the given epoch and machine ID.
-func (m *SnowflakeMachine) New() snofkid.SnowflakeID {
+func (m *SnowflakeMachine) New() SnowflakeID {
 	return 0
 }
 

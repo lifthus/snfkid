@@ -1,5 +1,16 @@
 package snofkid
 
+func ValidateMachine(epoch, machineID int64) error {
+	switch {
+	case ValidateEpoch(epoch) != nil:
+		return ErrInvalidEpoch
+	case ValidateMachineID(machineID) != nil:
+		return ErrInvalidMachineID
+	default:
+		return nil
+	}
+}
+
 func ValidateEpoch(epoch int64) error {
 	if epoch < 0 {
 		return ErrInvalidEpoch
