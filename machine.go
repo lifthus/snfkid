@@ -25,7 +25,10 @@ type SnowflakeMachine struct {
 
 // New generates a new SnowflakeID based on the machine's epoch and ID.
 func (m *SnowflakeMachine) New() int64 {
-	return 0
+
+	timestamp := time.Now().UnixMilli() - m.epoch
+
+	return from(timestamp, m.machineID, 0)
 }
 
 // Validate validates the sign bit and the machine ID of the given SnowflakeID.
