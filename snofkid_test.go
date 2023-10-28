@@ -24,3 +24,23 @@ func TestSequenceGetter(t *testing.T) {
 		t.Errorf("Sequence is expected to be %d but got %d", 123, res)
 	}
 }
+func TestMaxTimestamp(t *testing.T) {
+	calcedMaxTs := int64(-1) ^ (int64(-1) << TimestampBits)
+	if MaxTimestamp != calcedMaxTs {
+		t.Errorf("MaxTimestamp is expected to be %d but got %d", calcedMaxTs, MaxTimestamp)
+	}
+}
+
+func TestMaxMachineID(t *testing.T) {
+	calcedMaxMID := -1 ^ (-1 << MachineIDBits)
+	if MaxMachineID != calcedMaxMID {
+		t.Errorf("MaxMachineID is expected to be %d but got %d", calcedMaxMID, MaxMachineID)
+	}
+}
+
+func TestMaxSequence(t *testing.T) {
+	calcedMaxSeq := -1 ^ (-1 << SequenceBits)
+	if MaxSequence != calcedMaxSeq {
+		t.Errorf("MaxSequence is expected to be %d but got %d", calcedMaxSeq, MaxSequence)
+	}
+}
