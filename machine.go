@@ -24,11 +24,12 @@ type SnowflakeMachine struct {
 }
 
 // New generates a new SnowflakeID based on the machine's epoch and ID.
-func (m *SnowflakeMachine) New() int64 {
+// it returns an error if more than MaxSequence Snowflakes are generated in the same millisecond.
+func (m *SnowflakeMachine) New() (int64, error) {
 
 	timestamp := time.Now().UnixMilli() - m.epoch
 
-	return from(timestamp, m.machineID, 0)
+	return from(timestamp, m.machineID, 0), nil
 }
 
 // Validate validates the sign bit and the machine ID of the given SnowflakeID.

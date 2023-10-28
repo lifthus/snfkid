@@ -69,6 +69,16 @@ func TestMachineNewSnowflakesMachineIDs(t *testing.T) {
 }
 
 func TestMachineNewSnowflakesSequences(t *testing.T) {
+	mch, err := NewMachine(TestEpoch, TestMachineID)
+	if err != nil {
+		panic(err)
+	}
+	snowflakes := generateSnowflakesFor500ms(mch)
+	sfgroup := groupSnowflakesByRawTimestamp(snowflakes)
+
+	for _, sfs := range sfgroup {
+		t.Error(len(sfs))
+	}
 }
 
 func TestMachineValidateSnowflake(t *testing.T) {
