@@ -1,6 +1,6 @@
 package machine
 
-import "github.com/lifthus/snofkid/pkg/snofkid"
+import "github.com/lifthus/snofkid"
 
 func ValidateMachine(epoch, machineID int64) error {
 	switch {

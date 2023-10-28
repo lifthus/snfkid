@@ -1,6 +1,6 @@
 package machine
 
-import "github.com/lifthus/snofkid/pkg/snofkid"
+import "github.com/lifthus/snofkid"
 
 func NewDefaultMachine(machineID int64) (*SnowflakeMachine, error) {
 	return NewMachine(snofkid.TwitterEpoch, machineID)

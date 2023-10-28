@@ -3,7 +3,7 @@ package machine
 import (
 	"testing"
 
-	"github.com/lifthus/snofkid/pkg/snofkid"
+	"github.com/lifthus/snofkid"
 )
 
 func TestNewMachine(t *testing.T) {
